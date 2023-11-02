@@ -1,8 +1,12 @@
+import { TextToSpeech } from "@/components/TextToSpeech";
+
 export default function Home() {
-  return
-    <main className="h-screen">
-     {/* texto a voz */}
-     {/* chatbotcanvas */}
-  
-    </main>;
+  return (
+    <main className="h-full">
+    <TextToSpeech />
+    {/* chatbotcanvas */}
+ 
+   </main>
+  );
+ 
 }
