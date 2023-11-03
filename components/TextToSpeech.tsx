@@ -1,10 +1,12 @@
 "use client";
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useContext, useState } from 'react';
 import { sendTextToOpenai } from '@/utils/sendTextToOpenAi';
+import { AppContext } from '@/app/context/IsPlayingContext';
 
 export const TextToSpeech = () => {
     const [userText, setUserText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const {isPlaying, setIsPlaying} = useContext(AppContext);
     const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
     const voices = synth?.getVoices();
     const selectedVoices = voices?.find((voice) => voice.name === 'Google español');
@@ -13,10 +15,12 @@ export const TextToSpeech = () => {
         const utterance = new SpeechSynthesisUtterance(textToSpeak);
         utterance.voice = selectedVoices!;
         utterance.rate = 1;
-
         synth?.speak(utterance);
-        setIsLoading(true);
-        utterance.onend = () => setIsLoading(false);
+        setIsPlaying(true);
+
+        utterance.onend = () => {
+            setIsPlaying(false);
+        }
     };
 
 
