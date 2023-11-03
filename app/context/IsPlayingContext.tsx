@@ -4,7 +4,8 @@ import React, { useState, createContext, ReactNode } from 'react'
 interface AppContextType {
     isPlaying : boolean;
     setIsPlaying : React.Dispatch<React.SetStateAction<boolean>
-    >}
+    >;
+  }
 
 export const AppContext = createContext<AppContextType>({
     isPlaying : false,
@@ -17,5 +18,5 @@ export const IsPlayingProvider = ({children} : {children : ReactNode}) => {
     <AppContext.Provider value={{ isPlaying, setIsPlaying}}>
         {children}
         </AppContext.Provider>
-  )
-}
+  );
+};

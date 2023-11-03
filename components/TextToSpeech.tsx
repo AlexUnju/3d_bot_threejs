@@ -1,6 +1,6 @@
 "use client";
 import React, { FormEvent, useContext, useState } from 'react';
-import { sendTextToOpenai } from '@/utils/sendTextToOpenAi';
+import { sendTextToOpenAi } from '@/utils/sendTextToOpenAi';
 import { AppContext } from '@/app/context/IsPlayingContext';
 
 export const TextToSpeech = () => {
@@ -9,61 +9,61 @@ export const TextToSpeech = () => {
     const {isPlaying, setIsPlaying} = useContext(AppContext);
     const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
     const voices = synth?.getVoices();
-    const selectedVoices = voices?.find((voice) => voice.name === 'Google español');
+    const selectedVoices = voices?.find((voices) => voices.name === "Google español");
 
     const speak = (textToSpeak: string) => {
         const utterance = new SpeechSynthesisUtterance(textToSpeak);
-        utterance.voice = selectedVoices!;
+        const synth = window.speechSynthesis;
+
         utterance.rate = 1;
+        utterance.voice = selectedVoices!;
+
         synth?.speak(utterance);
         setIsPlaying(true);
-
         utterance.onend = () => {
             setIsPlaying(false);
-        }
+        };
     };
 
 
-    const handleUserText = async (event: FormEvent<HTMLFormElement>) => {
+    async function handleUserText(event: FormEvent<HTMLFormElement>){
         event.preventDefault();
+        if (userText === "") return alert("Ingresa un texto");
         setIsLoading(true);
         try {
-            const message = await sendTextToOpenai(userText);
-            console.log(message);
-            speak(message);
+          const message = await sendTextToOpenAi(userText);
+          speak(message);
         } catch (error) {
-            let messgae = "";
-            if (error instanceof Error) messgae = error.message;
-            console.log(messgae);
+          let message = "";
+          if (error instanceof Error) message = error.message;
+          console.log(message);
         } finally {
-            setIsLoading(false);
-            setUserText("");
+          setIsLoading(false);
+          setUserText("");
         }
-
-    };
-
+      }
 
 
    
 
     return (
-        <div className='relative top-0 z-50'>
+        <div className='relative z-50'>
             <form
                 onSubmit={handleUserText}
-                className='absolute top-[800px] left-[30px] space-x-2 pt-2'>
+                className='absolute top-[700px] space-x-2 pl-2 pt-1 ' >
                 <input
                     value={userText}
                     onChange={event => setUserText(event.target.value)}
-                    type="text" className='bg-transparent w-[510px] border border-[#C441FF]/80 
-            outline-none rounded-lg placeholder:text-[#C441FF]
-            p-2 text-[#C441FF]'
-                    placeholder='¿Que quieres saber?...' />
+                    type="text" className='bg-[#186e74] max-w-screen-xl border border-[#000]/80 
+                    outline-none rounded-lg placeholder:text-[#ffffff]
+                    p-2 text-white'
+                    placeholder='¿Que quieres saber?...'/>
 
                 <button
                     disabled={isLoading}
-                    className='text-[#C441FF] p-2 border border-[#C441FF] rounded-lg
-             disabled:text-blue-100 disabled:cursor-not-allowed disabled:bg-gray-500 hover:scale-110
-              hover:text-black hover:bg-[#C441FF] duration-300 transition-all '
+                    className='bg-[#186e74] text-[#ffffff] p-2 border border-[#000000] rounded-lg
+             disabled:text-green-900 disabled:cursor-not-allowed disabled:bg-yellow-300 hover:scale-110
+              hover:text-black hover:bg-[#166152] duration-300 transition-all '
                 >
                     {isLoading ? 'Cargando...' : 'Hablar'}
                 </button>

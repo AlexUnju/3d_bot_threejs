@@ -1,8 +1,8 @@
 "use client";
 import { AppContext } from '@/app/context/IsPlayingContext';
-import { OrbitControls, SpotLight, useAnimations, useGLTF } from '@react-three/drei';
+import { OrbitControls, SpotLight, useAnimations, useDepthBuffer, useGLTF } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Vector3 } from 'three';
 
 const Torch = ({vec = new Vector3(), ...props}) => {
@@ -17,7 +17,8 @@ const Torch = ({vec = new Vector3(), ...props}) => {
         light.current?.target.updateMatrixWorld();
     });
 
-    return <SpotLight ref={light}
+    return ( 
+    <SpotLight ref={light}
     castShadow
     penumbra={1}
     distance={10}
@@ -27,17 +28,16 @@ const Torch = ({vec = new Vector3(), ...props}) => {
     intensity={3}
     {...props}
     />
-
+    )
 }
 
 const Head = () => {
-    const model = useGLTF('/head.glb')
-    const animation = useAnimations(model.animations, model.scene)
-    const action = animation.actions.Animation;
+    const {isPlaying,setIsPlaying } = useContext(AppContext);
+    const model = useGLTF('/cute_robot.glb')
+    const animations = useAnimations(model.animations, model.scene)
+    const action = animations.actions.Animation;
+    const depthBuffer = useDepthBuffer({ frames: 1 });
     console.log(action);
-    
-    const [isPlaying, setIsPlaying] = useState(AppContext);
-
     useEffect(() => {
         if(isPlaying){
             action?.play();
@@ -50,29 +50,34 @@ const Head = () => {
 
     }, [isPlaying ,action]);
     return (
-        <>
-        <primitive object={model.scene} scale={6} 
-                                rotation-x={-0.20} 
-                                rotation-y={3.1} 
-                                rotation-z={6.3} />
-        <Torch color="purple" position={[3,2,2]}/>
-        <Torch color="red" position={[-3,2,2]}/>
-
-    </>
-    )
+		<>
+			<primitive object={model.scene} scale={1.7} position-y={-1.5}  rotation-y={-1.5} />
+			<Torch
+				depthBuffer={depthBuffer}
+color="#00FFFF"
+				position={[3, 2, 2]}
+			/>
+			<Torch
+				depthBuffer={depthBuffer}
+				color="yellow"
+				position={[-3, 2, 2]}
+			/>
+		</>
+	);
 }
 
 export const ChatbotCanvas = () => {
     return (
-        <Canvas style={{ height: 'calc(100vh - 100px)' }}>
+        <Canvas>
             <React.Fragment>
+
                 <OrbitControls enableZoom={false} 
                                enableDamping 
                                maxPolarAngle={2}
                                minAzimuthAngle={-Math.PI * 0.5}
                                maxAzimuthAngle={Math.PI * 0.5}
                                />
-               <ambientLight intensity={0.6}/>
+               <ambientLight/>
                 <Head/> 
             </React.Fragment>
         </Canvas>

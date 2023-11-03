@@ -1,4 +1,4 @@
-export const sendTextToOpenai = async (userText: string): Promise<string> => {
+export const sendTextToOpenAi = async (userText: string): Promise<string> => {
 	const response = await fetch("/api/openai", {
 		method: "POST",
 		headers: {
