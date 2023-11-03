@@ -1,4 +1,4 @@
-import { TextToSpeech } from "@/components/TextToSpeech";
+import { TextToSpeech } from '@/components/TextToSpeech';
 
 export default function Home() {
   return (
@@ -8,5 +8,4 @@ export default function Home() {
  
    </main>
   );
- 
 }
